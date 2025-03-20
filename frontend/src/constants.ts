@@ -1,5 +1,5 @@
-export const API_BASE_URL = "http://192.168.29.137:5000";
-// export const API_BASE_URL = "http://localhost:5000";
+export const API_BASE_URL = "http://localhost:5000";
+export const WS_SERVER_URL = "ws://localhost:8080";
 
 export const SUBSCRIPTION_TYPES = [
   {

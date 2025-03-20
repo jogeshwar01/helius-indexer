@@ -21,6 +21,7 @@ const Signup = () => {
       if (response.data.token && response.data?.user?.email) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("email", response.data.user.email);
+        localStorage.setItem("user_id", response.data.user.id);
         navigate("/dashboard");
       } else {
         setError("Invalid email or password");

@@ -45,7 +45,7 @@ model Subscription {
 }
 
 model Indexer {
-  id                    String      @id @default(cuid())
+  id                    String      @id @default(uuid())
   subscriptionType      String      @default("")
   subscriptionAddress   String      @default("")
   transaction           Json

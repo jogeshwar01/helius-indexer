@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
+import WebSocket from "ws";
+import { WS_SERVER_URL } from "./constants";
 const prisma = new PrismaClient();
 
 export interface Transaction {
@@ -28,7 +30,7 @@ export const handleIndexerRequest = async (
 
     // Loop through the transaction and check for subscriptions
     for (const event of transaction) {
-      const { type, accountData } = event;
+      const { type, accountData, signature } = event;
 
       // Check for matching subscriptions
       const subscriptions = await prisma.subscription.findMany({
@@ -71,6 +73,19 @@ export const handleIndexerRequest = async (
                 createdAt: new Date(),
                 updatedAt: new Date(),
               },
+            });
+
+            // Connect to WebSocket server and send the transaction
+            const ws = new WebSocket(WS_SERVER_URL);
+            const user_id = subscription.userId;
+            const sub_type = subscription.subType;
+            const sub_address = subscription.subAddress;
+
+            ws.on("open", () => {
+              ws.send(
+                JSON.stringify({ user_id, sub_type, sub_address, signature })
+              );
+              ws.close();
             });
           } catch (error) {
             console.error(

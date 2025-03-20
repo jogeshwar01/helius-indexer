@@ -1,4 +1,5 @@
-import { SUBSCRIPTION_TYPES } from "../../constants";
+import { useEffect, useState } from "react";
+import { SUBSCRIPTION_TYPES, WS_SERVER_URL } from "../../constants";
 
 export interface Subscription {
   subType: string;
@@ -20,6 +21,32 @@ const SubscriptionsSection = ({
   setSubscriptionInput,
   handleAddSubscription,
 }: SubscriptionsSectionProps) => {
+  const [logs, setLogs] = useState<string[]>([]);
+
+  useEffect(() => {
+    const newSocket = new WebSocket(WS_SERVER_URL);
+    newSocket.onopen = () => {
+      setLogs((prev) => [...prev, "> Waiting for transactions..."]);
+    };
+    newSocket.onmessage = (message) => {
+      const data = JSON.parse(message.data);
+      if (data.user_id === localStorage.getItem("user_id")) {
+        delete data.user_id;
+        setLogs((prev) => [
+          ...prev,
+          ``,
+          `-----`,
+          `> Transaction Details:`,
+          `- Type: ${data.sub_type}`,
+          `- Address: ${data.sub_address}`,
+          `- Signature: ${data.signature}`,
+          `-----`,
+        ]);
+      }
+    };
+    return () => newSocket.close();
+  }, []);
+
   return (
     <div className="space-y-6">
       <div>
@@ -82,6 +109,24 @@ const SubscriptionsSection = ({
         >
           Add Subscription
         </button>
+      </div>
+
+      <div className="mt-6">
+        <h4 className="text-lg font-medium text-gray-100 mb-3">
+          Transaction Logs
+        </h4>
+        <div className="bg-black rounded-md p-4 min-h-64 max-h-[1000px] overflow-y-auto font-mono text-sm text-nowrap">
+          <div className="space-y-1">
+            {logs.map((log, index) => (
+              <div key={index + log} className="text-green-400">
+                {log}
+              </div>
+            ))}
+            {logs.length === 0 && (
+              <div className="text-gray-500">Waiting for transactions...</div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
