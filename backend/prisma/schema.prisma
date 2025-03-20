@@ -26,11 +26,7 @@ model User {
 model DatabaseCreds {
   id          String   @id @default(uuid())
   userId      String   @unique
-  host        String
-  port        Int
-  dbname      String
-  username    String
-  password    String
+  dbUrl       String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
