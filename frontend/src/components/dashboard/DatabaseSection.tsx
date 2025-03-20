@@ -25,8 +25,6 @@ const DatabaseSection = ({
     "subscriptionType" TEXT NOT NULL, 
     "subscriptionAddress" TEXT NOT NULL,
     "transaction" JSONB NOT NULL,
-    "processed" BOOLEAN NOT NULL DEFAULT false,
-    "flagged" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

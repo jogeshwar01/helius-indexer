@@ -80,13 +80,14 @@ const Dashboard = () => {
     );
 
     if (response.status === 200) {
-      setSubscriptionInput(null);
       fetchSubscriptions();
     }
 
     if (response.status === 401) {
       setError(response.data.error);
     }
+
+    setSubscriptionInput(null);
   };
 
   if (!localStorage.getItem("token")) {
