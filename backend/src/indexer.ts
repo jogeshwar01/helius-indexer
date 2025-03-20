@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { Client } from "pg";
 import { v4 as uuidv4 } from "uuid";
 const prisma = new PrismaClient();
 
@@ -50,37 +49,36 @@ export const handleIndexerRequest = async (
         });
 
         if (userDbCreds) {
-          // Connect to the user's database using the credentials
-          const client = new Client({
-            connectionString: userDbCreds.dbUrl,
+          // Create new PrismaClient instance with user's database URL
+          const userPrisma = new PrismaClient({
+            datasources: {
+              db: {
+                url: userDbCreds.dbUrl,
+              },
+            },
+            transactionOptions: {
+              timeout: 5000,
+            },
           });
 
           try {
-            const queryText = `
-              INSERT INTO "Indexer" (
-                "id", "subscriptionType", "subscriptionAddress", "transaction", "createdAt", "updatedAt"
-              ) VALUES ($1, $2, $3, $4, $5, $6)
-            `;
-            const queryValues = [
-              uuidv4(),
-              subscription.subType,
-              subscription.subAddress,
-              JSON.stringify(event),
-              new Date().toISOString(),
-              new Date().toISOString(),
-            ];
-
-            await client.query(queryText, queryValues);
-            console.log(
-              `Transaction inserted into Indexer for user ${subscription.userId}`
-            );
+            await userPrisma.indexer.create({
+              data: {
+                id: uuidv4(),
+                transaction: event,
+                subscriptionType: subscription.subType,
+                subscriptionAddress: subscription.subAddress,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+            });
           } catch (error) {
             console.error(
               "Error inserting transaction into user's database:",
               error
             );
           } finally {
-            await client.end();
+            await userPrisma.$disconnect();
           }
         }
       }
@@ -88,7 +86,7 @@ export const handleIndexerRequest = async (
 
     // Store the transaction in your Prisma database
     await prisma.indexer.create({
-      data: { transaction: JSON.stringify(transaction) },
+      data: { transaction: transaction },
     });
 
     return {

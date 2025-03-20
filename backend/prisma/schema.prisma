@@ -45,10 +45,12 @@ model Subscription {
 }
 
 model Indexer {
-  id              String      @id @default(cuid())
-  transaction     Json
-  processed       Boolean     @default(false)
-  flagged         Boolean     @default(false)
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  id                    String      @id @default(cuid())
+  subscriptionType      String      @default("")
+  subscriptionAddress   String      @default("")
+  transaction           Json
+  processed             Boolean     @default(false)
+  flagged               Boolean     @default(false)
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
 }

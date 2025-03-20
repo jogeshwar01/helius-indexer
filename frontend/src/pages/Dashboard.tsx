@@ -11,7 +11,6 @@ import Logo from "../components/Logo";
 const Dashboard = () => {
   const [databaseInput, setDatabaseInput] = useState<string>("");
   const [database, setDatabase] = useState<string | null>(null);
-  const [error, setError] = useState<string>("");
   const [subscriptionInput, setSubscriptionInput] =
     useState<Subscription | null>(null);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
@@ -61,7 +60,7 @@ const Dashboard = () => {
     }
 
     if (response.status === 401) {
-      setError(response.data.error);
+      navigate("/login");
     }
   };
 
@@ -84,7 +83,7 @@ const Dashboard = () => {
     }
 
     if (response.status === 401) {
-      setError(response.data.error);
+      navigate("/login");
     }
 
     setSubscriptionInput(null);
@@ -133,7 +132,6 @@ const Dashboard = () => {
                 databaseInput={databaseInput}
                 setDatabaseInput={setDatabaseInput}
                 handleAddDatabase={handleAddDatabase}
-                error={error}
               />
             )}
           </div>

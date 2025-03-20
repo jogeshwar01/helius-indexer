@@ -1,13 +1,10 @@
 import express, { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import cors from "cors";
 import authRouter from "./routers/auth";
 import coreRouter from "./routers/core";
 import dotenv from "dotenv";
 import { handleIndexerRequest } from "./indexer";
 dotenv.config();
-
-const prisma = new PrismaClient();
 
 const app = express();
 

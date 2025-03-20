@@ -2,14 +2,12 @@ interface DatabaseSectionProps {
   databaseInput: string;
   setDatabaseInput: (value: string) => void;
   handleAddDatabase: () => void;
-  error: string;
 }
 
 const DatabaseSection = ({
   databaseInput,
   setDatabaseInput,
   handleAddDatabase,
-  error,
 }: DatabaseSectionProps) => {
   return (
     <div className="space-y-4">
@@ -46,7 +44,6 @@ const DatabaseSection = ({
           Add Database
         </button>
       </div>
-      {error && <p className="text-red-400 text-sm">{error}</p>}
     </div>
   );
 };
