@@ -71,7 +71,11 @@ authRouter.post(
         }
       );
 
-      res.status(200).json({ message: "Login successful", token });
+      res.status(200).json({
+        message: "Login successful",
+        token,
+        user: { id: user.id, email: user.email },
+      });
     } catch (error) {
       console.error("Login error:", error);
       res.status(500).json({ error: "Internal server error" });
