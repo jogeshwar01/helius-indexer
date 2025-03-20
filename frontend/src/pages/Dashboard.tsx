@@ -1,22 +1,19 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { SUBSCRIPTION_TYPES, API_BASE_URL } from "../constants";
+import { API_BASE_URL } from "../constants";
+import DatabaseSection from "./dashboard/DatabaseSection";
+import SubscriptionsSection, {
+  Subscription,
+} from "./dashboard/SubscriptionsSection";
 
 const Dashboard = () => {
   const [databaseInput, setDatabaseInput] = useState<string>("");
   const [database, setDatabase] = useState<string | null>(null);
   const [error, setError] = useState<string>("");
-  const [subscriptionInput, setSubscriptionInput] = useState<{
-    subType: string;
-    subAddress: string;
-  } | null>(null);
-  const [subscriptions, setSubscriptions] = useState<
-    {
-      subType: string;
-      subAddress: string;
-    }[]
-  >([]);
+  const [subscriptionInput, setSubscriptionInput] =
+    useState<Subscription | null>(null);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
   const navigate = useNavigate();
   const fetchSubscriptions = async () => {
@@ -109,61 +106,20 @@ const Dashboard = () => {
       </button>
 
       {database ? (
-        <div>
-          <h3>Database: {database}</h3>
-          {subscriptions.length > 0 && (
-            <div>
-              <h4>Subscriptions</h4>
-              {subscriptions.map((sub) => (
-                <p key={sub.subType}>
-                  {sub.subType} - {sub.subAddress}
-                </p>
-              ))}
-            </div>
-          )}
-
-          <select
-            onChange={(e) => {
-              const selected = SUBSCRIPTION_TYPES.find(
-                (s) => s.subType === e.target.value
-              );
-              if (selected) {
-                setSubscriptionInput({
-                  subType: selected.subType,
-                  subAddress: selected.address, // Use the address from SUBSCRIPTION_TYPES
-                });
-              }
-            }}
-          >
-            <option value="">Select subscription type</option>
-            {SUBSCRIPTION_TYPES.filter(
-              (subType) =>
-                !subscriptions?.some(
-                  (sub) =>
-                    sub.subType === subType.subType &&
-                    sub.subAddress === subType.address
-                )
-            ).map((subType) => (
-              <option key={subType.subType} value={subType.subType}>
-                {subType.subType} - {subType.address}
-              </option>
-            ))}
-          </select>
-          <button onClick={handleAddSubscription} disabled={!subscriptionInput}>
-            Add Subscription
-          </button>
-        </div>
+        <SubscriptionsSection
+          database={database}
+          subscriptions={subscriptions}
+          subscriptionInput={subscriptionInput}
+          setSubscriptionInput={setSubscriptionInput}
+          handleAddSubscription={handleAddSubscription}
+        />
       ) : (
-        <div>
-          <input
-            type="text"
-            placeholder="Database URL"
-            value={databaseInput}
-            onChange={(e) => setDatabaseInput(e.target.value)}
-          />
-          <button onClick={handleAddDatabase}>Add Database</button>
-          {error && <p>{error}</p>}
-        </div>
+        <DatabaseSection
+          databaseInput={databaseInput}
+          setDatabaseInput={setDatabaseInput}
+          handleAddDatabase={handleAddDatabase}
+          error={error}
+        />
       )}
     </div>
   );
