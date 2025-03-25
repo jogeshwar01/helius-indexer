@@ -4,14 +4,11 @@ export const WS_SERVER_URL = "ws://localhost:8080";
 export const SUBSCRIPTION_TYPES = [
   {
     subType: "TRANSFER",
-    address: "Htg9cXNdSrP37Q1ZJqsewMoMTdBfkrRHYYm3F1EJj5Uk",
   },
   {
-    subType: "TRANSFER",
-    address: "BXh1prgfbL6G71y5rqfHaRhovnPbxCq4x7T3bT3EjZ1f",
+    subType: "NFT_BID",
   },
   {
-    subType: "NFT_TRANSFER",
-    address: "0x0000000000000000000000000000000000000000",
+    subType: "NFT_SALE",
   },
 ];

@@ -75,36 +75,49 @@ const SubscriptionsSection = ({
       <div className="space-y-3">
         <select
           onChange={(e) => {
-            const selected = SUBSCRIPTION_TYPES.find(
-              (s) => s.subType === e.target.value
-            );
-            if (selected) {
+            if (e.target.value) {
               setSubscriptionInput({
-                subType: selected.subType,
-                subAddress: selected.address,
+                subType: e.target.value,
+                subAddress: "",
               });
+            } else {
+              setSubscriptionInput(null);
             }
           }}
+          value={subscriptionInput?.subType || ""}
           className="block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-100"
         >
           <option value="">Select subscription type</option>
           {SUBSCRIPTION_TYPES.filter(
             (subType) =>
               !subscriptions?.some(
-                (sub: Subscription) =>
-                  sub.subType === subType.subType &&
-                  sub.subAddress === subType.address
+                (sub: Subscription) => sub.subType === subType.subType
               )
           ).map((subType) => (
             <option key={subType.subType} value={subType.subType}>
-              {subType.subType} - {subType.address}
+              {subType.subType}
             </option>
           ))}
         </select>
 
+        {subscriptionInput && (
+          <input
+            type="text"
+            placeholder="Enter address"
+            value={subscriptionInput.subAddress}
+            onChange={(e) =>
+              setSubscriptionInput({
+                ...subscriptionInput,
+                subAddress: e.target.value,
+              })
+            }
+            className="block w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-gray-100"
+          />
+        )}
+
         <button
           onClick={handleAddSubscription}
-          disabled={!subscriptionInput}
+          disabled={!subscriptionInput?.subType || !subscriptionInput?.subAddress}
           className="w-full px-4 py-2 text-sm cursor-pointer hover:underline font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Add Subscription
